@@ -3,7 +3,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 
 
 def smoothed_z_score_test(data):
@@ -19,9 +18,6 @@ def smoothed_z_score_test(data):
 
     input_id = 157  # 输入数据的id
     output_id = 161  # 聚合并输出的数据的id
-
-    start_date = '2017-01-01'  # 开始转换的时间
-    end_date = '2020-01-31'  # 结束转换的时间
 
     y = data[input_id]['data_value']
     # 设置z-score参数
@@ -58,9 +54,9 @@ def smoothed_z_score_test(data):
     data[output_id]['data_value'] = np.asarray(series_dict['signals'])
 
 
-def paint(dfs=[], labels=[], title='暂无'):
+def paint(dfs=[], labels=[], title='SO2检测浓度--2019年下半年'):
     assert len(dfs) == len(labels)
-    plt.rcParams['font.sans-serif'] = ['SimHei']  # 显示中文标签
+    plt.rcParams['font.sans-serif'] = ['Songti SC']  # 显示中文标签
     plt.rcParams['axes.unicode_minus'] = False
 
     plt.figure(figsize=(16, 8))
@@ -79,16 +75,17 @@ def read_data(filename = None, sheetname = None):
     for data3 in data2:
         result.append(data3[2])
     # print(result)
-    return result[0:90]
+    return result[1102:2204]
 
 
 if __name__ == '__main__':
-    idx = pd.date_range('2019-04-16', periods=90, freq='D')
-    filename = './data/附件1 监测点A空气质量预报基础数据.xlsx'
-    sheetname = '监测点A逐日污染物浓度实测数据'
+    idx = pd.date_range('2019-06-01 1:00', periods=1102, freq='h')
+    # filename = './data/附件1 监测点A空气质量预报基础数据.xlsx'
+    # sheetname = '监测点A逐日污染物浓度实测数据'
+    filename = './data/监测点A逐时空气质量数据(处理后).xlsx'
+    sheetname = '修改后'
     data = read_data(filename, sheetname)
     data_value = pd.Series(data, index=idx)
-    print(data)
     # 设置z-score参数
 
     df = pd.DataFrame({
@@ -101,5 +98,5 @@ if __name__ == '__main__':
     data[161] = pd.DataFrame()
     smoothed_z_score_test(data)
 
-    paint(dfs=[data[157], data[161]], labels=['origin', 'signal'])
+    paint(dfs=[data[157], data[161]], labels=['浓度值', '异常值判定曲线'])
 
